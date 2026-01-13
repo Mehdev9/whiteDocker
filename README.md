@@ -1,59 +1,215 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Application Laravel avec Docker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Ce projet est une application Laravel containerisée avec Docker.
 
-## About Laravel
+## Prérequis
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   Docker installé sur votre machine
+-   Docker Compose installé (inclus avec Docker Desktop)
+-   Git (optionnel, pour cloner le projet)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Méthode 1 : Utiliser Docker Compose
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Docker Compose permet de démarrer tous les services (application, base de données, phpMyAdmin) avec une seule commande.
 
-## Learning Laravel
+### Démarrer l'application
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+docker-compose up -d
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Cette commande va :
 
-## Laravel Sponsors
+-   Construire l'image de l'application Laravel
+-   Démarrer le conteneur de l'application (port 8080)
+-   Démarrer le conteneur MySQL (port 3306)
+-   Démarrer phpMyAdmin (port 8081)
+-   Créer un réseau pour la communication entre les services
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Accéder à l'application
 
-### Premium Partners
+-   **Application Laravel** : http://localhost:8080
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Commandes Docker Compose utiles
 
-## Contributing
+**Voir les logs de tous les services :**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker-compose logs -f
+```
 
-## Code of Conduct
+**Arrêter tous les services :**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker-compose down
+```
 
-## Security Vulnerabilities
+**Arrêter et supprimer les volumes :**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+docker-compose down -v
+```
 
-## License
+**Exécuter une commande dans le conteneur :**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker-compose exec app bash
+```
+
+**Voir l'état des services :**
+
+```bash
+docker-compose ps
+```
+
+## Méthode 2 : Utiliser Docker directement
+
+Si vous préférez utiliser Docker sans Compose :
+
+### Instructions pour exécuter le conteneur
+
+### 1. Construire l'image Docker
+
+Depuis le répertoire racine du projet, exécutez la commande suivante pour construire l'image Docker :
+
+```bash
+docker build -t laravel-app .
+```
+
+Cette commande va :
+
+-   Télécharger l'image de base PHP 8.2 avec Apache
+-   Installer toutes les dépendances système et PHP nécessaires
+-   Copier le code source dans le conteneur
+-   Configurer Laravel et Apache
+
+### 2. Démarrer le conteneur
+
+Une fois l'image construite, lancez le conteneur avec :
+
+```bash
+docker run -d -p 8080:80 --name white_docker laravel-app
+```
+
+**Explications des options :**
+
+-   `-d` : Lance le conteneur en arrière-plan (mode détaché)
+-   `-p 8080:80` : Mappe le port 80 du conteneur au port 8080 de votre machine
+-   `--name white_docker` : Donne un nom au conteneur pour faciliter sa gestion
+-   `laravel-app` : Nom de l'image à utiliser
+
+### 3. Commandes Docker utiles
+
+**Voir les conteneurs en cours d'exécution :**
+
+```bash
+docker ps
+```
+
+**Arrêter le conteneur :**
+
+```bash
+docker stop white_docker
+```
+
+**Redémarrer le conteneur :**
+
+```bash
+docker start white_docker
+```
+
+**Voir les logs du conteneur :**
+
+```bash
+docker logs white_docker
+```
+
+**Supprimer le conteneur :**
+
+```bash
+docker rm -f white_docker
+```
+
+## Vérification du fonctionnement de l'application
+
+### Avec Docker Compose
+
+**Vérifier l'état des services :**
+
+```bash
+docker-compose ps
+```
+
+Tous les services doivent être "Up".
+
+**Accéder à l'application :**
+
+-   Ouvrez http://localhost:8080 dans votre navigateur
+-   Vous devriez voir la page d'accueil de Laravel
+
+**Vérifier les logs :**
+
+```bash
+docker-compose logs app
+```
+
+### Avec Docker directement
+
+### Méthode 1 : Via le navigateur web
+
+1. Ouvrez votre navigateur web
+2. Accédez à l'URL : `http://localhost:8080`
+3. Vous devriez voir la page d'accueil de Laravel
+
+**Résultat attendu :**
+
+-   La page Laravel s'affiche correctement
+-   Aucune erreur 500 ou 404
+
+**Vérifications :**
+
+-   Aucune erreur critique dans les logs
+-   Apache démarre correctement
+-   Pas d'erreurs PHP
+
+### Méthode 2 : Vérifier que le conteneur est en cours d'exécution
+
+```bash
+docker ps
+```
+
+**Résultat attendu :**
+
+-   Le conteneur `white_docker` apparaît dans la liste
+-   Le statut est "Up" (en cours d'exécution)
+-   Le port mapping `0.0.0.0:8080->80/tcp` est visible
+
+### Méthode 3 : Inspecter l'état du conteneur
+
+```bash
+docker inspect white_docker
+```
+
+Cette commande affiche des informations détaillées sur le conteneur, notamment :
+
+-   L'adresse IP du conteneur
+-   Les variables d'environnement
+-   L'état du conteneur
+-   La configuration réseau
+
+### Nettoyer les conteneurs et images
+
+```bash
+# Supprimer tous les conteneurs arrêtés
+docker container prune
+
+# Supprimer les images non utilisées
+docker image prune
+```
+
+## Notes importantes
+
+-   Le fichier `.env` est généré automatiquement à partir de `.env.example` lors de la construction de l'image
+-   La clé d'application Laravel (`APP_KEY`) est générée automatiquement
+-   Les permissions sur les dossiers `storage` et `bootstrap/cache` sont configurées automatiquement
+-   Avec Docker Compose, la connexion à la base de données est automatiquement configurée
